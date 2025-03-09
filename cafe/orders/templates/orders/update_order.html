@@ -1,0 +1,43 @@
+{% extends 'orders/base.html' %}
+
+{% block content %}
+  <h1>Редактировать заказ #{{ order.id }}</h1>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="status">Статус заказа</label>
+        <select name="status" id="status" class="form-control">
+            {% for value, display in form.fields.status.choices %}
+                <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>
+                    {{ display }}
+                </option>
+            {% endfor %}
+        </select>
+        {% if form.status.errors %}
+            <div class="text-danger">{{ form.status.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <div class="form-group mt-3">
+        <label for="items">Список блюд (введите через пробел: Название цена)</label>
+        <textarea id="items" name="items" class="form-control" rows="4">{{ order.items }}</textarea>
+        {% if form.items.errors %}
+            <div class="text-danger">{{ form.items.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Сохранить изменения</button>
+  </form>
+
+  <a href="{% url 'order_list' %}" class="btn btn-secondary mt-3">Вернуться к списку заказов</a>
+
+  {% if messages %}
+    <ul class="messages mt-3">
+      {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}

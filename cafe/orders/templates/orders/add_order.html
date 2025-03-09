@@ -1,0 +1,29 @@
+{% extends 'orders/base.html' %}
+
+{% block content %}
+<h2>Добавить заказ</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="table_number">Номер стола</label>
+        <input type="number" name="table_number" class="form-control" id="table_number" value="{{ form.table_number.value }}">
+        {% if form.table_number.errors %}
+            <div class="text-danger">{{ form.table_number.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="items">Список блюд (введите через пробел: Название цена)</label>
+        <textarea id="items" name="items" class="form-control" rows="4">{{ form.items.value }}</textarea>
+        {% if form.items.errors %}
+            <div class="text-danger">{{ form.items.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Добавить заказ</button>
+</form>
+
+<a href="{% url 'order_list' %}" class="btn btn-secondary mt-3">Назад</a>
+{% endblock %}

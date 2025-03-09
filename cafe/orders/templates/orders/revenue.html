@@ -1,0 +1,30 @@
+{% extends 'orders/base.html' %}
+
+{% block title %}Выручка за смену{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Выручка за смену</h1>
+
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Дата</th>
+                <th>Выручка</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for revenue in daily_revenue %}
+            <tr>
+                <td>{{ revenue.created_at__date }}</td>
+                <td>{{ revenue.total_revenue }} ₽</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="2" class="text-center">Нет данных о выручке</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

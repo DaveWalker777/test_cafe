@@ -1,0 +1,73 @@
+{% extends 'orders/base.html' %}
+
+{% block title %}Список заказов{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Список заказов</h1>
+
+    <a href="{% url 'add_order' %}" class="btn btn-primary mb-3">Добавить заказ</a>
+
+    <form method="GET" class="mb-3">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Поиск по номеру стола или статусу"
+                       value="{{ request.GET.search }}">
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-control">
+                    <option value="">Все статусы</option>
+                    <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>В ожидании</option>
+                    <option value="ready" {% if request.GET.status == 'ready' %}selected{% endif %}>Готово</option>
+                    <option value="paid" {% if request.GET.status == 'paid' %}selected{% endif %}>Оплачено</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-info">Поиск</button>
+            </div>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Номер стола</th>
+            <th>Список блюд</th>
+            <th>Общая стоимость</th>
+            <th>Статус</th>
+            <th>Дата создания</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.table_number }}</td>
+            <td>
+                {% if order.items_list %}
+                    {% for item in order.items_list %}
+                        {{ item.0 }} - {{ item.1 }} ₽<br>
+                    {% endfor %}
+                {% else %}
+                    Нет данных
+                {% endif %}
+            </td>
+            <td>{{ order.total_price }} ₽</td>
+            <td>{{ order.get_status_display }}</td>
+            <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+            <td>
+                <a href="{% url 'update_order' order.id %}" class="btn btn-warning btn-sm">Изменить</a>
+                <a href="{% url 'delete_order' order.id %}" class="btn btn-danger btn-sm">Удалить</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7" class="text-center">Заказы отсутствуют</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
